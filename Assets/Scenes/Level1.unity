@@ -8207,7 +8207,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -162, y: 103}
+  m_AnchoredPosition: {x: 221, y: -52}
   m_SizeDelta: {x: 350, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &552797260
@@ -8235,7 +8235,7 @@ MonoBehaviour:
   m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.4
+  m_FillAmount: 0.3
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -11991,9 +11991,9 @@ RectTransform:
   - {fileID: 552797259}
   m_Father: {fileID: 1967030845}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: -848, y: 425}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1108949545
@@ -15269,12 +15269,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f12dc896a24c0934b89b028d3216489b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  platformEffector: {fileID: 1532608573}
-  checkPoint1: {fileID: 685644156}
-  checkPoint2: {fileID: 1654364944}
-  platformRigidbody: {fileID: 1532608574}
-  waitTimeBeforeReenable: 0.5
-  moveSpeed: 3
 --- !u!61 &1532608572
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -15549,7 +15543,7 @@ Transform:
   m_GameObject: {fileID: 1768254337}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -30.103788, y: 2.30698, z: -10}
+  m_LocalPosition: {x: -30.659327, y: 2.30645, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15855,7 +15849,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -161, y: 103}
+  m_AnchoredPosition: {x: 222, y: -52}
   m_SizeDelta: {x: 350, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2086789802
@@ -15883,7 +15877,7 @@ MonoBehaviour:
   m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.5
+  m_FillAmount: 0.3
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
