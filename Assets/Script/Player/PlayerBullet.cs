@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerBullet : MonoBehaviour
 {
@@ -16,8 +16,20 @@ public class PlayerBullet : MonoBehaviour
 		bulletRigidbody.velocity = direction.normalized * speed;
 	}
 
-	private void OnCollisionEnter2D(Collision2D collision)
+	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		Destroy(gameObject);
+		if (collision.CompareTag("Enemy"))
+		{
+			EnemyHealth enemy = collision.GetComponent<EnemyHealth>();
+			if (enemy != null)
+			{
+				enemy.TakeDamage(1f);
+			}
+			Destroy(gameObject);
+		}
+		else if (collision.CompareTag("Terrain"))
+		{
+			Destroy(gameObject);
+		}
 	}
 }

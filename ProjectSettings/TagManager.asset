@@ -7,6 +7,8 @@ TagManager:
   - Platform
   - Enemy
   - Trap
+  - Terrain
+  - Ladder
   layers:
   - Default
   - TransparentFX
@@ -14,7 +16,7 @@ TagManager:
   - Terrain
   - Water
   - UI
-  - 
+  - Ladder
   - 
   - 
   - 

@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private Transform playerTransform;
 
 	private bool jumpCheck = false;
+	private bool hasDoubleJumped = false;
 	private GameObject currentPlatform = null;
 
 	void Update()
@@ -26,9 +27,11 @@ public class PlayerMovement : MonoBehaviour
 	{
 		float horizontal = Input.GetAxis("Horizontal");
 		playerRigidbody.velocity = new Vector2(horizontal * moveSpeed, playerRigidbody.velocity.y);
+
 		if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
 		{
 			playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, jumpForce);
+			hasDoubleJumped = false; // Đặt lại trạng thái nhảy đôi
 		}
 		if (IsGrounded() == true)
 		{
@@ -38,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
 		{
 			playerRigidbody.velocity = new Vector2(playerRigidbody.velocity.x, jumpForce);
 			jumpCheck = false;
+			hasDoubleJumped = true; // Đánh dấu là đã nhảy đôi
 		}
 
 		//Bấm S khi đứng trên platform sẽ rơi xuống
@@ -69,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
 				currentScale.y, currentScale.z);
 		}
 
-		if (Input.anyKey == true)
+		if (Mathf.Abs(playerRigidbody.velocity.x) > 0.1f)
 		{
 			playerAnimator.SetBool("IsMove", true);
 		}
@@ -77,14 +81,20 @@ public class PlayerMovement : MonoBehaviour
 		{
 			playerAnimator.SetBool("IsMove", false);
 		}
-		if (playerRigidbody.velocity.y > .1f)
+
+		if (playerRigidbody.velocity.y > 0.1f)
 		{
-			playerAnimator.SetInteger("State", 1);
+			if (hasDoubleJumped)
+				playerAnimator.SetInteger("State", 2); // Double jump animation
+			else
+				playerAnimator.SetInteger("State", 1); // Normal jump animation
 		}
+
 		else if (playerRigidbody.velocity.y < -.1f)
 		{
 			playerAnimator.SetInteger("State", -1);
 		}
+
 		else
 		{
 			playerAnimator.SetInteger("State", 0);
