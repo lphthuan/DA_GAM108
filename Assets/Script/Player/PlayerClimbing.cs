@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PlayerClimb : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class PlayerClimb : MonoBehaviour
 	[SerializeField] private PlayerMovement playerMovement;
 	[SerializeField] private PlayerAttack playerAttack;
 
+	private LadderData currentLadderData;
 	private bool isClimbing = false;
 	private Transform currentLadder;
 
@@ -29,13 +31,12 @@ public class PlayerClimb : MonoBehaviour
 			ClimbLadder();
 
 			if (Input.GetKeyDown(KeyCode.Space))
-				ExitClimb(); // Cho phép nhảy ra khỏi thang
+				ExitClimb();
 		}
 	}
 
 	private void TrySnapToLadder()
 	{
-		// Check các collider xung quanh trong snapRange và cao 2 đơn vị
 		Collider2D[] hits = Physics2D.OverlapBoxAll(transform.position, new Vector2(snapRange, 2f), 0, ladderLayer);
 
 		foreach (var hit in hits)
@@ -43,8 +44,10 @@ public class PlayerClimb : MonoBehaviour
 			if (hit.CompareTag("Ladder"))
 			{
 				currentLadder = hit.transform;
+				currentLadderData = hit.GetComponent<LadderData>();
+				if (currentLadderData == null) return;
 
-				// Snap về giữa thang, giữ nguyên trục Y
+				// Snap vào giữa thang (giữ nguyên Y)
 				Vector3 snapPos = new Vector3(hit.bounds.center.x, transform.position.y, transform.position.z);
 				transform.position = snapPos;
 
@@ -64,33 +67,66 @@ public class PlayerClimb : MonoBehaviour
 		if (playerAttack != null) playerAttack.enabled = false;
 
 		if (playerAnimator != null)
-			playerAnimator.SetBool("IsClimbing", true);
+		{
+			playerAnimator.SetBool("IsClimbing", true); // Đang leo
+			playerAnimator.speed = 1f; // Ngay khi leo thang, đứng yên ở frame đầu
+			StartCoroutine(PauseClimbAnimation());
+		}
+	}
+
+	private IEnumerator PauseClimbAnimation()
+	{
+		yield return new WaitForSecondsRealtime(0.05f);
+		if (isClimbing && Mathf.Abs(Input.GetAxisRaw("Vertical")) < 0.1f)
+		{
+			playerAnimator.speed = 0f;
+		}
 	}
 
 	private void ClimbLadder()
 	{
 		float verticalInput = Input.GetAxisRaw("Vertical");
+
+		// Giới hạn đỉnh thang: tự động thoát
+		if (currentLadderData != null)
+		{
+			if (verticalInput > 0 && transform.position.y >= currentLadderData.topPoint.position.y)
+			{
+				ExitClimb();
+				return;
+			}
+			else if (verticalInput < 0 && transform.position.y <= currentLadderData.bottomPoint.position.y)
+			{
+				// Ở đáy thang vẫn leo lên được, nhưng không cho rớt tiếp
+				playerRigidbody.velocity = Vector2.zero;
+				verticalInput = 0f;
+			}
+		}
+
+		// Di chuyển trên thang
 		playerRigidbody.velocity = new Vector2(0, verticalInput * climbSpeed);
 
-		// Đứng yên nếu không bấm lên/xuống
-		if (Mathf.Abs(verticalInput) < 0.1f)
-			playerRigidbody.velocity = Vector2.zero;
-
-		// Gọi animation leo thang
+		// Animation climbing
 		if (playerAnimator != null)
-			playerAnimator.SetBool("IsClimbing", true);
+		{
+			bool isMoving = Mathf.Abs(verticalInput) > 0.01f;
+			playerAnimator.speed = isMoving ? 1f : 0f;
+		}
 	}
 
 	private void ExitClimb()
 	{
 		isClimbing = false;
-		playerRigidbody.gravityScale = 3f;
+		playerRigidbody.gravityScale = 2f;
 
 		if (playerMovement != null) playerMovement.enabled = true;
 		if (playerAttack != null) playerAttack.enabled = true;
 
 		if (playerAnimator != null)
+		{
 			playerAnimator.SetBool("IsClimbing", false);
+			playerAnimator.speed = 1f; // Trả lại tốc độ anim bình thường
+		}
 	}
 
 	private void OnDrawGizmosSelected()
