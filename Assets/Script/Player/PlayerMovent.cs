@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
 	[SerializeField] private Rigidbody2D playerRigidbody;
 	[SerializeField] private float moveSpeed = 6f;
-	[SerializeField] private float jumpForce = 10f;
+	[SerializeField] private float jumpForce = 7f;
 	[SerializeField] private Animator playerAnimator;
 	[SerializeField] private SpriteRenderer playerSpriteRenderer;
 	[SerializeField] private BoxCollider2D playerCollider;
