@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private SpriteRenderer playerSpriteRenderer;
 	[SerializeField] private BoxCollider2D playerCollider;
 	[SerializeField] private LayerMask terrainLayer;
+	[SerializeField] private Transform playerTransform;
 
 	private bool jumpCheck = false;
 	private GameObject currentPlatform = null;
@@ -56,13 +57,16 @@ public class PlayerMovement : MonoBehaviour
 
 	private void UpdateAnimator()
 	{
+		var currentScale = playerTransform.localScale;
 		if (playerRigidbody.velocity.x < 0)
 		{
-			playerSpriteRenderer.flipX = true;
+			playerTransform.localScale = new Vector3(-1f * Mathf.Abs(currentScale.x),
+				currentScale.y, currentScale.z);
 		}
 		else if (playerRigidbody.velocity.x > 0)
 		{
-			playerSpriteRenderer.flipX = false;
+			playerTransform.localScale = new Vector3(1f * Mathf.Abs(currentScale.x),
+				currentScale.y, currentScale.z);
 		}
 
 		if (Input.anyKey == true)
