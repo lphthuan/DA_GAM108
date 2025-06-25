@@ -489,18 +489,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.0019179583, y: 0.061024904}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1.5652174, y: 1.5652174}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.042196, y: 1.0313902}
   m_EdgeRadius: 0
 --- !u!212 &106981470
 SpriteRenderer:
@@ -542,8 +542,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 670465795, guid: afccade7b005ada48a5bcbc99f020aa1, type: 3}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 21300000, guid: 08fece5d0a493b54a9fa361cc47ea896, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -8385,6 +8385,9 @@ MonoBehaviour:
   ladderLayer:
     serializedVersion: 2
     m_Bits: 64
+  platformLayer:
+    serializedVersion: 2
+    m_Bits: 128
   playerRigidbody: {fileID: 371966532}
   playerAnimator: {fileID: 371966535}
   playerCollider: {fileID: 371966531}
@@ -15030,7 +15033,7 @@ GameObject:
   - component: {fileID: 1373844266}
   - component: {fileID: 1373844270}
   - component: {fileID: 1373844271}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: Platform
   m_TagString: Platform
   m_Icon: {fileID: 0}
