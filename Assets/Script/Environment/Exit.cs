@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Exit : MonoBehaviour
 {
@@ -20,7 +18,12 @@ public class Exit : MonoBehaviour
 			{
 				if (i < gameManager.teleportDestinations.Count && gameManager.teleportDestinations[i] != null)
 				{
-					playerObject.transform.position = gameManager.teleportDestinations[i].position;
+					Transform destination = gameManager.teleportDestinations[i];
+					playerObject.transform.position = destination.position;
+
+					// Đặt checkpoint mới
+					gameManager.SetCurrentCheckpoint(destination);
+
 					return true;
 				}
 			}
@@ -38,9 +41,7 @@ public class Exit : MonoBehaviour
 			if (!TeleportPlayer(playerObject))
 			{
 				GameManager.Instance.GameOver();
-				//Destroy(gameObject);
 			}
 		}
 	}
-
 }

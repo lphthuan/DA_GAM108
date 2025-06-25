@@ -57,6 +57,6 @@ public class EnemyHealth : MonoBehaviour
         {
             col.enabled = false;
 		}
-        Destroy(gameObject, 1f);
+        Destroy(gameObject, 0.7f);
 	}
 }
