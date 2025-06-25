@@ -7,8 +7,9 @@ public class PlayerHealth : MonoBehaviour
 	public float currentHeath { get; private set; }
 
 	[SerializeField] private GameManager gameManager;
+	[SerializeField] private PlayerClimb playerClimb;
 
-	[SerializeField] private float deathAnimationDuration = 1.5f;
+	[SerializeField] private float deathAnimationDuration = 0.5f;
 	private bool isDead = false;
 
 	private void Awake()
@@ -21,6 +22,9 @@ public class PlayerHealth : MonoBehaviour
 		if (isDead) return;
 
 		currentHeath = Mathf.Clamp(currentHeath - _damage, 0, startHealth);
+
+		if (playerClimb != null)
+			playerClimb.ExitClimb();
 
 		if (currentHeath <= 0 && !isDead)
 		{
