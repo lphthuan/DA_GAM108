@@ -7,6 +7,7 @@ public class PlayerClimb : MonoBehaviour
 	[SerializeField] private float climbSpeed = 3f;
 	[SerializeField] private float snapRange = 0.5f;
 	[SerializeField] private LayerMask ladderLayer;
+	[SerializeField] private LayerMask platformLayer;
 
 	[Header("References")]
 	[SerializeField] private Rigidbody2D playerRigidbody;
@@ -18,6 +19,8 @@ public class PlayerClimb : MonoBehaviour
 	private LadderData currentLadderData;
 	private bool isClimbing = false;
 	private Transform currentLadder;
+	private float waitForAnimation = 0f;
+	private bool isIgnoringPlatform = false;
 
 	void Update()
 	{
@@ -47,7 +50,6 @@ public class PlayerClimb : MonoBehaviour
 				currentLadderData = hit.GetComponent<LadderData>();
 				if (currentLadderData == null) return;
 
-				// Snap vào giữa thang (giữ nguyên Y)
 				Vector3 snapPos = new Vector3(hit.bounds.center.x, transform.position.y, transform.position.z);
 				transform.position = snapPos;
 
@@ -68,17 +70,19 @@ public class PlayerClimb : MonoBehaviour
 
 		if (playerAnimator != null)
 		{
-			playerAnimator.SetBool("IsClimbing", true); // Đang leo
-			playerAnimator.speed = 1f; // Ngay khi leo thang, đứng yên ở frame đầu
+			playerAnimator.SetBool("IsClimbing", true);
+			playerAnimator.speed = 1f;
+			waitForAnimation = 1;
 			StartCoroutine(PauseClimbAnimation());
 		}
 	}
 
 	private IEnumerator PauseClimbAnimation()
 	{
-		yield return new WaitForSecondsRealtime(0.05f);
+		yield return new WaitForSecondsRealtime(0.3f);
 		if (isClimbing && Mathf.Abs(Input.GetAxisRaw("Vertical")) < 0.1f)
 		{
+			waitForAnimation = 0;
 			playerAnimator.speed = 0f;
 		}
 	}
@@ -87,7 +91,7 @@ public class PlayerClimb : MonoBehaviour
 	{
 		float verticalInput = Input.GetAxisRaw("Vertical");
 
-		// Giới hạn đỉnh thang: tự động thoát
+		// Giới hạn trên/dưới
 		if (currentLadderData != null)
 		{
 			if (verticalInput > 0 && transform.position.y >= currentLadderData.topPoint.position.y)
@@ -97,21 +101,54 @@ public class PlayerClimb : MonoBehaviour
 			}
 			else if (verticalInput < 0 && transform.position.y <= currentLadderData.bottomPoint.position.y)
 			{
-				// Ở đáy thang vẫn leo lên được, nhưng không cho rớt tiếp
 				playerRigidbody.velocity = Vector2.zero;
 				verticalInput = 0f;
 			}
 		}
 
-		// Di chuyển trên thang
 		playerRigidbody.velocity = new Vector2(0, verticalInput * climbSpeed);
+
+		// 👉 Nếu đang nhấn ↓ và chưa ignore → kiểm tra nền dưới và bỏ va chạm
+		if (verticalInput < -0.1f && !isIgnoringPlatform)
+		{
+			TryIgnorePlatformBelow();
+		}
 
 		// Animation climbing
 		if (playerAnimator != null)
 		{
 			bool isMoving = Mathf.Abs(verticalInput) > 0.01f;
-			playerAnimator.speed = isMoving ? 1f : 0f;
+			playerAnimator.speed = isMoving ? 1f : waitForAnimation;
 		}
+	}
+
+	private void TryIgnorePlatformBelow()
+	{
+		// Tạo box nhỏ dưới chân player để kiểm tra nền
+		Vector2 boxCenter = (Vector2)transform.position + Vector2.down * 0.55f;
+		Vector2 boxSize = new Vector2(0.5f, 0.1f);
+
+		Collider2D platform = Physics2D.OverlapBox(boxCenter, boxSize, 0f, platformLayer);
+
+		if (platform != null && platform != playerCollider)
+		{
+			StartCoroutine(IgnorePlatformTemporarily(platform));
+		}
+	}
+
+	private IEnumerator IgnorePlatformTemporarily(Collider2D platform)
+	{
+		isIgnoringPlatform = true;
+
+		if (playerCollider != null && platform != null)
+		{
+			Physics2D.IgnoreCollision(playerCollider, platform, true);
+			yield return new WaitForSeconds(0.5f);
+			if (platform != null)
+				Physics2D.IgnoreCollision(playerCollider, platform, false);
+		}
+
+		isIgnoringPlatform = false;
 	}
 
 	private void ExitClimb()
@@ -125,12 +162,14 @@ public class PlayerClimb : MonoBehaviour
 		if (playerAnimator != null)
 		{
 			playerAnimator.SetBool("IsClimbing", false);
-			playerAnimator.speed = 1f; // Trả lại tốc độ anim bình thường
+			playerAnimator.speed = 1f;
 		}
 	}
 
 	private void OnDrawGizmosSelected()
 	{
+		Gizmos.color = Color.green;
+		Gizmos.DrawWireCube((Vector2)transform.position + Vector2.down * 0.55f, new Vector2(0.5f, 0.1f));
 		Gizmos.color = Color.cyan;
 		Gizmos.DrawWireCube(transform.position, new Vector3(snapRange, 2f, 0));
 	}
