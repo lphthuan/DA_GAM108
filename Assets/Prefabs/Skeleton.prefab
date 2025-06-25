@@ -240,6 +240,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRange: 10
-  attackCooldown: 2
+  attackCooldown: 1
   firePoint: {fileID: 2247327378290066208}
   skeBulletPrefab: {fileID: 2312301190338272799, guid: 981fd4e47cab7ac4491a2d8acf2aee46, type: 3}

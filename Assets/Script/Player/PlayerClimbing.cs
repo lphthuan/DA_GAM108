@@ -151,7 +151,7 @@ public class PlayerClimb : MonoBehaviour
 		isIgnoringPlatform = false;
 	}
 
-	private void ExitClimb()
+	public void ExitClimb()
 	{
 		isClimbing = false;
 		playerRigidbody.gravityScale = 2f;
