@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,9 +12,13 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private GameObject playerObject;
 
 	[Header("Teleport Settings")]
-
 	public List<GameObject> teleportingExit = new List<GameObject>();
 	public List<Transform> teleportDestinations = new List<Transform>();
+
+	[Header("Checkpoint Settings")]
+	[SerializeField] private Transform spawnPointLv1;
+	private Transform currentCheckpoint;
+	private bool hasTeleported = false;
 
 	private float startTime;
 	private float timePlayed;
@@ -33,13 +36,11 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	// Start is called before the first frame update
 	void Start()
 	{
 		StartGame();
 	}
 
-	// Update is called once per frame
 	void Update()
 	{
 		if (!isGameOver)
@@ -54,6 +55,7 @@ public class GameManager : MonoBehaviour
 			}
 		}
 	}
+
 	void StartGame()
 	{
 		isGameOver = false;
@@ -64,6 +66,7 @@ public class GameManager : MonoBehaviour
 		}
 		Time.timeScale = 1f;
 	}
+
 	public void GameOver()
 	{
 		if (isGameOver) return;
@@ -80,6 +83,7 @@ public class GameManager : MonoBehaviour
 		{
 			timePlayedText.text = "Time: " + timePlayed.ToString("F2") + "s";
 		}
+
 		if (playerObject != null)
 		{
 			playerObject.SetActive(false);
@@ -93,6 +97,24 @@ public class GameManager : MonoBehaviour
 		if (gameOverPanel != null)
 		{
 			gameOverPanel.SetActive(false);
+		}
+	}
+
+	public void SetCurrentCheckpoint(Transform checkpoint)
+	{
+		currentCheckpoint = checkpoint;
+		hasTeleported = true;
+	}
+
+	public Transform GetCheckpointOrSpawn()
+	{
+		if (hasTeleported && currentCheckpoint != null)
+		{
+			return currentCheckpoint;
+		}
+		else
+		{
+			return spawnPointLv1;
 		}
 	}
 }
